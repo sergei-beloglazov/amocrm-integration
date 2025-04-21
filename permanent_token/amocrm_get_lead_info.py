@@ -74,8 +74,16 @@ def decode_lead_info(lead_info):
                 base64_parts = link.split("download_amocrm/")[1].split("/rec.mp3")[0].split("_")
                 
                 if len(base64_parts) == 2:
-                    decoded_info =  base64.b64decode(base64_parts[0]).decode('utf-8')
-                    log_message(f"Decoded info: "+decoded_info)
+                    decoded_info = base64.b64decode(base64_parts[0]).decode('utf-8')
+                    try:
+                        # Parse the JSON string
+                        decoded_json = json.loads(decoded_info)
+                        # Pretty print the JSON with indentation
+                        pretty_json = json.dumps(decoded_json, indent=4, ensure_ascii=False)
+                        log_message(f"Decoded JSON:\n{pretty_json}")
+                    except json.JSONDecodeError as e:
+                        log_message(f"Decoded info: "+decoded_info)
+                        log_message(f"Error decoding JSON: {str(e)}")
                 else:
                     log_message("Error: Unexpected format in the link.")
             except Exception as e:
